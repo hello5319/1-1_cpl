@@ -110,24 +110,27 @@ nav {
   to { opacity: 1; transform: translateY(0);}
 }
 
-/* ------ urban(괴담 페이지) ------ */
-.urban-header {
+/* ------ urban(괴담 페이지) & community(커뮤니티) 공통 ------ */
+.urban-header,
+.community-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
 }
-.urban-title {
+.urban-title,
+.community-title {
   font-size: 2rem;
   font-weight: bold;
   color: #fafafa;
   letter-spacing: 1px;
 }
-.urban-sort {
+.urban-sort, .community-sort {
   display: flex;
   gap: 1rem;
 }
-.urban-sort button {
+.urban-sort button,
+.community-sort button {
   background: #222;
   color: #fafafa;
   border: none;
@@ -137,16 +140,17 @@ nav {
   font-size: 1rem;
   transition: background 0.18s, color 0.18s;
 }
-.urban-sort button.active, .urban-sort button:hover {
+.urban-sort button.active, .urban-sort button:hover,
+.community-sort button.active, .community-sort button:hover {
   background: #e01c1c;
   color: #fff;
 }
-.urban-list {
+.urban-list, .community-list {
   display: flex;
   flex-direction: column;
   gap: 1.7rem;
 }
-.urban-item {
+.urban-item, .community-item {
   background: #181818;
   border-radius: 10px;
   padding: 1.2rem 1.5rem;
@@ -155,12 +159,12 @@ nav {
   flex-direction: column;
   gap: 0.5rem;
 }
-.urban-item-title {
+.urban-item-title, .community-item-title {
   font-size: 1.2rem;
   color: #e01c1c;
   font-weight: 600;
 }
-.urban-item-meta {
+.urban-item-meta, .community-item-meta {
   font-size: 0.95rem;
   color: #bbb;
   margin-bottom: 0.3rem;
@@ -168,10 +172,10 @@ nav {
   gap: 1.5rem;
   flex-wrap: wrap;
 }
-.urban-item-body {
+.urban-item-body, .community-item-body {
   color: #fafafa;
 }
-.urban-detail {
+.urban-detail, .community-detail {
   cursor: default !important;
 }
 .level-stars {
@@ -297,7 +301,7 @@ footer {
   }
 }
 @media (max-width:700px) {
-  .urban-header { flex-direction: column; gap: 1.2rem; align-items: flex-start;}
-  .urban-list { gap: 1rem;}
-  .urban-item { padding: 1rem;}
+  .urban-header, .community-header { flex-direction: column; gap: 1.2rem; align-items: flex-start;}
+  .urban-list, .community-list { gap: 1rem;}
+  .urban-item, .community-item { padding: 1rem;}
 }
