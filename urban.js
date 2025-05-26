@@ -93,7 +93,7 @@ function renderUrbanList(sortType, filterType) {
   } else {
     urbanList.innerHTML =
       list.map(item => `
-        <div class="urban-item" data-id="${item.id}" style="cursor:pointer;">
+        <div class="product-card urban-item" data-id="${item.id}" style="cursor:pointer;">
           <div class="urban-item-title">${item.title}</div>
           <div class="urban-item-meta">
             <span>좋아요 ${item.likes}개</span>
@@ -163,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // 드롭다운 메뉴 중 urbanMenu 내부 링크만 처리
     const urbanMenu = document.getElementById('urbanMenu');
     if (urbanMenu) {
       urbanMenu.querySelectorAll('.submenu a').forEach(link => {
