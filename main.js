@@ -1,6 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+// ✅ main.js: 드롭다운 메뉴만 관리
+
+document.addEventListener('DOMContentLoaded', function () {
   function setupDropdownMenus() {
-    ['urbanMenu', 'communityMenu'].forEach(menuId => {
+    ['urbanMenu', 'communityMenu', 'aboutMenu'].forEach(menuId => {
       const menuLi = document.getElementById(menuId);
       if (menuLi) {
         const submenu = menuLi.querySelector('.submenu');
@@ -12,12 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
           menuLi.classList.add('show-submenu');
           if (dropdown) dropdown.classList.add('open');
         }
+
         function closeMenu() {
           closeTimer = setTimeout(() => {
             menuLi.classList.remove('show-submenu');
             if (dropdown) dropdown.classList.remove('open');
           }, 350);
         }
+
         if (dropdown && submenu) {
           dropdown.addEventListener('mouseenter', openMenu);
           dropdown.addEventListener('focus', openMenu);
