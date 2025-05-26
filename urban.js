@@ -51,7 +51,6 @@ const urbanData = [
   }
 ];
 
-// 각 필터별 한글 제목 매핑
 const filterTitles = {
   all: '전체 괴담 모음',
   korea: '한국 괴담',
@@ -68,12 +67,10 @@ function getParamFromURL(name) {
 function updateUrbanTitle(filterTypeOrTitle) {
   const titleElem = document.querySelector('.urban-title');
   if (titleElem) {
-    // 상세보기면 제목 그대로, 리스트면 한글 매핑
     titleElem.textContent = filterTitles[filterTypeOrTitle] || filterTypeOrTitle || '괴담 모음';
   }
 }
 
-// 별로 난이도 표시 (level: 1~5)
 function renderLevelStars(level) {
   return '★'.repeat(level) + '☆'.repeat(5 - level);
 }
@@ -106,7 +103,6 @@ function renderUrbanList(sortType, filterType) {
           <div class="urban-item-body">${item.body}</div>
         </div>
       `).join('');
-    // 클릭 이벤트 등록(상세보기)
     document.querySelectorAll('.urban-item').forEach(itemElem => {
       itemElem.addEventListener('click', function(){
         const clickId = this.getAttribute('data-id');
@@ -125,7 +121,6 @@ function renderUrbanDetail(id) {
     updateUrbanTitle('괴담 모음');
     return;
   }
-  // 제목을 상세 제목으로 변경
   const titleElem = document.querySelector('.urban-title');
   if (titleElem) titleElem.textContent = data.title;
 
@@ -158,10 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
       updateUrbanTitle(filterType);
     }
 
-    // 정렬 버튼
     document.querySelectorAll('.sort-btn').forEach(btn => {
       btn.addEventListener('click', function(){
-        document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         sortType = this.dataset.sort;
         renderUrbanList(sortType, filterType);
@@ -169,20 +163,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // 세부 메뉴 클릭시
-    document.querySelectorAll('.submenu a').forEach(link => {
-      link.addEventListener('click', function(e){
-        e.preventDefault();
-        const url = new URL(this.href);
-        const newFilter = url.searchParams.get('filter') || 'all';
-        filterType = newFilter;
-        window.history.pushState({}, '', url.pathname + url.search);
-        renderUrbanList(sortType, filterType);
-        updateUrbanTitle(filterType);
+    // 드롭다운 메뉴 중 urbanMenu 내부 링크만 처리
+    const urbanMenu = document.getElementById('urbanMenu');
+    if (urbanMenu) {
+      urbanMenu.querySelectorAll('.submenu a').forEach(link => {
+        link.addEventListener('click', function(e){
+          e.preventDefault();
+          const url = new URL(this.href);
+          const newFilter = url.searchParams.get('filter') || 'all';
+          filterType = newFilter;
+          window.history.pushState({}, '', url.pathname + url.search);
+          renderUrbanList(sortType, filterType);
+          updateUrbanTitle(filterType);
+        });
       });
-    });
+    }
 
-    // 뒤로가기/앞으로가기 지원
     window.addEventListener('popstate', function() {
       const idParam = getParamFromURL('id');
       filterType = getParamFromURL('filter') || 'all';
