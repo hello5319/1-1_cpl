@@ -147,18 +147,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 세부 메뉴 클릭시 (드롭다운 메뉴)
-    document.querySelectorAll('.submenu a').forEach(link => {
-      link.addEventListener('click', function(e){
-        if (!this.href.includes('community.html')) return; // community 메뉴만
-        e.preventDefault();
-        const url = new URL(this.href);
-        const newBoard = url.searchParams.get('board') || 'free';
-        boardType = newBoard;
-        window.history.pushState({}, '', url.pathname + url.search);
-        renderCommunityList(sortType, boardType);
-        updateCommunityTitle(boardType);
+    const communityMenu = document.getElementById('communityMenu');
+    if (communityMenu) {
+      communityMenu.querySelectorAll('.submenu a').forEach(link => {
+        link.addEventListener('click', function(e){
+          e.preventDefault();
+          const url = new URL(this.href);
+          const newBoard = url.searchParams.get('board') || 'free';
+          boardType = newBoard;
+          window.history.pushState({}, '', url.pathname + url.search);
+          renderCommunityList(sortType, boardType);
+          updateCommunityTitle(boardType);
+        });
       });
-    });
+    }
 
     // 뒤로가기/앞으로가기 지원
     window.addEventListener('popstate', function() {
