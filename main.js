@@ -138,5 +138,52 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     updateSlider(); // 초기 위치 설정
+    }
+if (!document.getElementById('bgmAudio')) {
+    const audioEl = document.createElement('audio');
+    audioEl.id = 'bgmAudio';
+    audioEl.loop = true;
+    audioEl.innerHTML = `<source src="bgm.mp3" type="audio/mpeg">브라우저가 오디오를 지원하지 않습니다.`;
+    document.body.appendChild(audioEl); // 이건 그대로 body에 넣는 게 좋음
+  }
+
+  // 헤더 내부에 버튼 삽입
+  const headerInner = document.querySelector('.header-inner');
+  if (headerInner && !document.getElementById('bgmToggleContainer')) {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.className = 'bgm-header-control';
+    btnWrapper.id = 'bgmToggleContainer';
+    btnWrapper.innerHTML = `
+      <button id="bgmToggleBtn">🎵 <span id="bgmStatus">OFF</span></button>
+    `;
+    headerInner.appendChild(btnWrapper);
+  }
+
+  // 기능 제어
+  const bgmBtn = document.getElementById('bgmToggleBtn');
+  const bgmAudio = document.getElementById('bgmAudio');
+  const bgmStatus = document.getElementById('bgmStatus');
+
+  if (bgmBtn && bgmAudio && bgmStatus) {
+    let isPlaying = localStorage.getItem('bgmStatus') === 'on';
+
+    function updateState(play) {
+      if (play) {
+        bgmAudio.play().catch(() => {});
+        bgmStatus.textContent = 'ON';
+        localStorage.setItem('bgmStatus', 'on');
+      } else {
+        bgmAudio.pause();
+        bgmStatus.textContent = 'OFF';
+        localStorage.setItem('bgmStatus', 'off');
+      }
+    }
+
+    updateState(isPlaying);
+
+    bgmBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      updateState(isPlaying);
+    });
   }
 });
