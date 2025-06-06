@@ -1,6 +1,7 @@
-// ✅ main.js: 드롭다운 메뉴 + 홈 슬라이더
+// ✅ main.js: 드롭다운 메뉴 + 홈 슬라이더 + 로그인/로그아웃 버튼 + BGM 제어 + 시작하기 버튼 스크롤
 
 document.addEventListener('DOMContentLoaded', function () {
+  // 드롭다운 메뉴 초기화
   function setupDropdownMenus() {
     ['urbanMenu', 'communityMenu', 'aboutMenu'].forEach(menuId => {
       const menuLi = document.getElementById(menuId);
@@ -36,6 +37,96 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   setupDropdownMenus();
+
+  // 🎵 BGM 버튼 삽입
+  const headerInner = document.querySelector('.header-inner');
+  if (headerInner && !document.getElementById('bgmToggleContainer')) {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.className = 'bgm-header-control';
+    btnWrapper.id = 'bgmToggleContainer';
+    btnWrapper.innerHTML = `
+      <button id="bgmToggleBtn">🎵 <span id="bgmStatus">OFF</span></button>
+    `;
+    headerInner.appendChild(btnWrapper);
+  }
+
+  // 🔐 로그인 버튼 삽입
+  if (headerInner && !document.getElementById('authBtnContainer')) {
+    const btnWrapper = document.createElement('div');
+    btnWrapper.className = 'bgm-header-control';
+    btnWrapper.id = 'authBtnContainer';
+    btnWrapper.innerHTML = `
+      <button id="authBtn">로그인</button>
+    `;
+    headerInner.appendChild(btnWrapper);
+  }
+
+  // 🔐 로그인/로그아웃 버튼 동작
+  const authBtn = document.getElementById('authBtn');
+  const savedUser = localStorage.getItem('loggedInUser');
+  if (savedUser && authBtn) {
+    authBtn.textContent = '로그아웃';
+  }
+  if (authBtn) {
+    authBtn.addEventListener('click', () => {
+      const currentPath = window.location.pathname;
+      if (authBtn.textContent.includes('로그아웃')) {
+        localStorage.removeItem('loggedInUser');
+        alert('로그아웃되었습니다.');
+        location.reload();
+      } else {
+        sessionStorage.setItem('redirectAfterLogin', currentPath + window.location.search);
+        window.location.href = 'login.html';
+      }
+    });
+  }
+
+  // ✅ 시작하기 버튼 → 인기 괴담 슬라이더로 스크롤
+  const heroActionBtn = document.getElementById('heroActionBtn');
+  if (heroActionBtn) {
+    heroActionBtn.addEventListener('click', () => {
+      const target = document.getElementById('homeSlider');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
+  // 🎵 BGM 오디오 태그 삽입
+  if (!document.getElementById('bgmAudio')) {
+    const audioEl = document.createElement('audio');
+    audioEl.id = 'bgmAudio';
+    audioEl.loop = true;
+    audioEl.innerHTML = `<source src="audio/bgm.mp3" type="audio/mpeg">브라우저가 오디오를 지원하지 않습니다.`;
+    document.body.appendChild(audioEl);
+  }
+
+  const bgmBtn = document.getElementById('bgmToggleBtn');
+  const bgmAudio = document.getElementById('bgmAudio');
+  const bgmStatusText = document.getElementById('bgmStatus');
+
+  if (bgmBtn && bgmAudio && bgmStatusText) {
+    let isPlaying = localStorage.getItem('bgmStatus') === 'on';
+
+    function updateState(play) {
+      if (play) {
+        bgmAudio.play().catch(() => {});
+        bgmStatusText.textContent = 'ON';
+        localStorage.setItem('bgmStatus', 'on');
+      } else {
+        bgmAudio.pause();
+        bgmStatusText.textContent = 'OFF';
+        localStorage.setItem('bgmStatus', 'off');
+      }
+    }
+
+    updateState(isPlaying);
+
+    bgmBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      updateState(isPlaying);
+    });
+  }
 
   // 홈 인기 괴담 슬라이더
   const urbanData = [
@@ -109,18 +200,18 @@ document.addEventListener('DOMContentLoaded', function () {
     `).join('');
 
     document.querySelectorAll('.product-card').forEach(card => {
-  card.addEventListener('click', function () {
-    const id = this.getAttribute('data-id');
-    window.location.href = `urban.html?id=${id}`;
+      card.addEventListener('click', function () {
+        const id = this.getAttribute('data-id');
+        window.location.href = `urban.html?id=${id}`;
+      });
     });
-  });
 
     let idx = 0;
     const visible = 2.3;
 
     function updateSlider() {
       const card = slider.querySelector('.product-card');
-      const cardWidth = card ? card.offsetWidth + 32 : 260; // 32px은 gap 여유
+      const cardWidth = card ? card.offsetWidth + 32 : 260;
       slider.style.transform = `translateX(${-idx * cardWidth}px)`;
     }
 
@@ -137,53 +228,6 @@ document.addEventListener('DOMContentLoaded', function () {
       updateSlider();
     };
 
-    updateSlider(); // 초기 위치 설정
-    }
-if (!document.getElementById('bgmAudio')) {
-    const audioEl = document.createElement('audio');
-    audioEl.id = 'bgmAudio';
-    audioEl.loop = true;
-    audioEl.innerHTML = `<source src="bgm.mp3" type="audio/mpeg">브라우저가 오디오를 지원하지 않습니다.`;
-    document.body.appendChild(audioEl); // 이건 그대로 body에 넣는 게 좋음
-  }
-
-  // 헤더 내부에 버튼 삽입
-  const headerInner = document.querySelector('.header-inner');
-  if (headerInner && !document.getElementById('bgmToggleContainer')) {
-    const btnWrapper = document.createElement('div');
-    btnWrapper.className = 'bgm-header-control';
-    btnWrapper.id = 'bgmToggleContainer';
-    btnWrapper.innerHTML = `
-      <button id="bgmToggleBtn">🎵 <span id="bgmStatus">OFF</span></button>
-    `;
-    headerInner.appendChild(btnWrapper);
-  }
-
-  // 기능 제어
-  const bgmBtn = document.getElementById('bgmToggleBtn');
-  const bgmAudio = document.getElementById('bgmAudio');
-  const bgmStatus = document.getElementById('bgmStatus');
-
-  if (bgmBtn && bgmAudio && bgmStatus) {
-    let isPlaying = localStorage.getItem('bgmStatus') === 'on';
-
-    function updateState(play) {
-      if (play) {
-        bgmAudio.play().catch(() => {});
-        bgmStatus.textContent = 'ON';
-        localStorage.setItem('bgmStatus', 'on');
-      } else {
-        bgmAudio.pause();
-        bgmStatus.textContent = 'OFF';
-        localStorage.setItem('bgmStatus', 'off');
-      }
-    }
-
-    updateState(isPlaying);
-
-    bgmBtn.addEventListener('click', () => {
-      isPlaying = !isPlaying;
-      updateState(isPlaying);
-    });
+    updateSlider();
   }
 });
